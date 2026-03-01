@@ -21,6 +21,7 @@ interface ProjectsState {
   projects: Record<string, ProjectDoc>
 
   setActiveProject: (id: string | null) => void
+  loadAllProjects: () => Promise<void>
   loadProject: (id: string) => Promise<void>
   updateCurrentProject: (partialReq: Partial<ProjectDoc>) => void
   createProject: (
@@ -35,6 +36,19 @@ export const useProjectsStore = create<ProjectsState>()((set, get) => ({
   projects: {},
 
   setActiveProject: (id) => set({ activeProjectId: id }),
+
+  loadAllProjects: async () => {
+    try {
+      const all = await db.projects.toArray()
+      const dict: Record<string, ProjectDoc> = {}
+      all.forEach((p) => {
+        dict[p.id] = p
+      })
+      set({ projects: dict })
+    } catch (err) {
+      console.error('[Projects] Failed to load all projects:', err)
+    }
+  },
 
   loadProject: async (id) => {
     try {

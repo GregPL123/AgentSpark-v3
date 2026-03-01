@@ -1,4 +1,3 @@
-import JSZip from 'jszip'
 import type { ProjectDoc } from '@/lib/db'
 import { generateAutoGenAgent } from '../agents/autogen'
 import { generateCrewAIAgent } from '../agents/crewai'
@@ -6,6 +5,7 @@ import { generateLangGraphAgent } from '../agents/langgraph'
 import { generateSwarmAgent } from '../agents/swarm'
 
 export async function exportProjectToZip(project: ProjectDoc): Promise<Blob> {
+  const JSZip = (await import('jszip')).default
   const zip = new JSZip()
 
   // Root Manifest

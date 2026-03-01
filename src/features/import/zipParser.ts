@@ -1,4 +1,3 @@
-import JSZip from 'jszip'
 import { db, type ProjectDoc } from '@/lib/db'
 import { AgentSchema, ManifestSchema } from '@/lib/schemas'
 
@@ -9,6 +8,7 @@ export interface ImportPreviewResult {
 }
 
 export async function parseZipImport(file: File): Promise<ImportPreviewResult> {
+  const JSZip = (await import('jszip')).default
   const zip = await JSZip.loadAsync(file)
   const manifestFile = zip.file('manifest.json')
 
