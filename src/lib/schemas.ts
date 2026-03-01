@@ -37,9 +37,11 @@ export const AgentSchema = z
 export const SharePayloadV3Schema = z
   .object({
     version: z.literal(3),
-    salt: z.string().min(1),
-    iv: z.string().min(1),
+    salt: z.string(),
+    iv: z.string().optional(),
     data: z.string().min(1), // Base64 encrypted string
+    title: z.string().optional(),
+    description: z.string().optional(),
     schemaHash: z.string().optional(),
   })
   .strict()

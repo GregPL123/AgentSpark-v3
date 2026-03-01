@@ -80,7 +80,9 @@ export interface SharePayloadV2 {
 export interface SharePayloadV3 {
   version: 3
   salt: string
-  iv: string
-  data: string
+  iv?: string // Base64
+  data: string // Base64 (zaszyfrowany payload AES-GCM)
   schemaHash?: string
+  title?: string
+  description?: string
 }
