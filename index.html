@@ -7782,7 +7782,7 @@ function toggleChatSidebar() {
   localStorage.setItem('agentspark-sidebar-collapsed', _sidebarCollapsed ? '1' : '0');
 }
 // Restore sidebar state on load
-(function() {
+(() => {
   window.addEventListener('DOMContentLoaded', () => {
     if (localStorage.getItem('agentspark-sidebar-collapsed') === '1') {
       _sidebarCollapsed = true;
@@ -9501,7 +9501,7 @@ function _themeHoldStart() {
 }
 
 // Init theme from localStorage or auto-detect from OS
-(function() {
+(() => {
   const saved = localStorage.getItem('agentspark-theme');
   // If user never manually picked → follow OS preference
   const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -9789,7 +9789,7 @@ self.addEventListener('message', e => {
   // Handled directly inside toggleTheme() / _toggleThemeCore()
 
   // Initial sync of meta theme-color on PWA startup
-  (function() {
+  (() => {
     const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     const metaTC = document.getElementById('meta-theme-color');
     if(metaTC) metaTC.content = isDark ? '#1a170d' : '#faf7ee';
@@ -10060,7 +10060,7 @@ function _toggleAccordion(item) {
 
 // ── PATCH showInstructions to use accordion ────────────────
 const _origShowInstructions = window.showInstructions;
-window.showInstructions = function() {
+window.showInstructions = () => {
   const section = document.getElementById('instructions-section');
   const isHidden = getComputedStyle(section).display === 'none';
   section.style.display = isHidden ? 'block' : 'none';
@@ -10073,7 +10073,7 @@ window.showInstructions = function() {
 
 // ── PATCH showScreen to update context bar + drawer ────────
 const _origShowScreen = window.showScreen;
-window.showScreen = function(name) {
+window.showScreen = (name) => {
   _origShowScreen(name);
   _updateContextBar(name);
   updateDrawerActive();
@@ -10097,11 +10097,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // ── iOS: swipe-down to dismiss sheets ─────────────────────
-(function() {
+(() => {
   let startY = 0, startScrollTop = 0, sheetEl = null, overlayEl = null;
   let isDragging = false;
 
-  document.addEventListener('touchstart', function(e) {
+  document.addEventListener('touchstart', (e) => {
     const overlay = e.target.closest('.modal-overlay.open, .ios-sheet-overlay.open');
     if (!overlay) return;
     const sheet = overlay.querySelector('.modal, .share-modal, .fw-modal, .ios-sheet');
@@ -10122,17 +10122,17 @@ document.addEventListener('DOMContentLoaded', () => {
     isDragging = true;
   }, { passive: true });
 
-  document.addEventListener('touchmove', function(e) {
+  document.addEventListener('touchmove', (e) => {
     if (!isDragging || !sheetEl) return;
     const delta = e.touches[0].clientY - startY;
     if (delta > 0) {
-      sheetEl.style.transform = `translateY(${Math.pow(delta, 0.8)}px)`;
+      sheetEl.style.transform = `translateY(${delta ** 0.8}px)`;
       sheetEl.style.transition = 'none';
       overlayEl.style.background = `rgba(0,0,0,${Math.max(0, 0.55 - delta/400)})`;
     }
   }, { passive: true });
 
-  document.addEventListener('touchend', function(e) {
+  document.addEventListener('touchend', (e) => {
     if (!isDragging || !sheetEl) return;
     const delta = e.changedTouches[0].clientY - startY;
     sheetEl.style.transition = '';
@@ -10186,7 +10186,7 @@ function showSwToast(msg, isError = true) {
 
 
 // ── Bottom nav hide-on-scroll-down (mobile only) ──────────
-(function() {
+(() => {
   let _lastScroll = 0;
   let _tabHidden = false;
   const THRESHOLD = 6;        // px delta to trigger
@@ -10228,7 +10228,7 @@ function showSwToast(msg, isError = true) {
 
   // Reset on screen change
   const _origShowScreenP7 = window.showScreen;
-  window.showScreen = function(name) {
+  window.showScreen = (name) => {
     _origShowScreenP7(name);
     _tabHidden = false;
     document.getElementById('ios-tab-bar')?.classList.remove('hidden-by-scroll');

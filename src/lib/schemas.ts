@@ -59,6 +59,7 @@ export const InterviewChoiceSchema = z
     id: z.string().min(1),
     label: z.string().min(1),
     value: z.any(),
+    description: z.string().optional(),
   })
   .strict()
 
@@ -69,3 +70,6 @@ export const InterviewQuestionSchema = z
     choices: z.array(InterviewChoiceSchema),
   })
   .strict()
+
+export type InterviewChoice = z.infer<typeof InterviewChoiceSchema>
+export type InterviewQuestion = z.infer<typeof InterviewQuestionSchema>

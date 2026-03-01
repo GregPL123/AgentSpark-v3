@@ -12,7 +12,8 @@ interface ChatState {
   isTyping: boolean
   currentQuestionIndex: number // np. przy wywiadzie przed wygenerowaniem Agenta
 
-  addMessage: (msg: Omit<ChatMessage, 'id' | 'timestamp'>) => void
+  addMessage: (msg: Omit<ChatMessage, 'id' | 'timestamp'>) => string
+  updateMessage: (id: string, contentAction: (prev: string) => string) => void
   setTyping: (typing: boolean) => void
   setQuestionIndex: (idx: number) => void
   clearChat: () => void
@@ -23,9 +24,18 @@ export const useChatStore = create<ChatState>()((set) => ({
   isTyping: false,
   currentQuestionIndex: 0,
 
-  addMessage: (msg) =>
+  addMessage: (msg) => {
+    const id = crypto.randomUUID()
     set((state) => ({
-      messages: [...state.messages, { ...msg, id: crypto.randomUUID(), timestamp: Date.now() }],
+      messages: [...state.messages, { ...msg, id, timestamp: Date.now() }],
+    }))
+    return id
+  },
+  updateMessage: (id, contentAction) =>
+    set((state) => ({
+      messages: state.messages.map((m) =>
+        m.id === id ? { ...m, content: contentAction(m.content) } : m
+      ),
     })),
   setTyping: (isTyping) => set({ isTyping }),
   setQuestionIndex: (idx) => set({ currentQuestionIndex: idx }),

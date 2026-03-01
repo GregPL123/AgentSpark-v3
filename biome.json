@@ -15,12 +15,7 @@
   },
   "css": {
     "parser": {
-      "cssModules": true,
-      "cssModulesModules": true,
-      "cssModulesLocals": true,
-      "cssModulesGlobals": true,
-      "cssModulesHash": true,
-      "cssModulesImport": true
+      "cssModules": true
     }
   },
   "formatter": {
