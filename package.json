@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "biome:fix": "node node_modules/@biomejs/biome/bin/biome check --apply --no-errors-on-unmatched",
+    "biome:check": "biome check --no-errors-on-unmatched"
   },
   "dependencies": {
     "@ai-sdk/google": "^3.0.34",
