@@ -1,64 +1,69 @@
-import { z } from 'zod';
+import { z } from 'zod'
 
-// Level & Lang zgodne z ujednoliceniem w types/index.ts
-export const LevelSchema = z.enum(['iskra', 'plomien', 'pozar', 'inferno']);
-export const LangSchema = z.enum(['en', 'pl']);
-export const AgentRoleSchema = z.string(); // Może być rozszerzone w przyszłości, aktualnie jako string bazowy.
-export const AgentTypeSchema = z.enum(['custom', 'template']);
+export const LevelSchema = z.enum(['iskra', 'plomien', 'pozar', 'inferno'])
+export const LangSchema = z.enum(['en', 'pl'])
+export const AgentRoleSchema = z.string()
+export const AgentTypeSchema = z.enum(['custom', 'template'])
 
-export const GeneratedFileSchema = z.object({
-    path: z.string(),
+export const GeneratedFileSchema = z
+  .object({
+    path: z.string().min(1),
     content: z.string(),
     language: z.string(),
-    purpose: z.string().optional()
-});
+    purpose: z.string().optional(),
+  })
+  .strict()
 
-export const AgentSchema = z.object({
-    id: z.string().uuid().or(z.string()),
+// Proste wyrażenie na pojedyncze emoji
+const emojiRegex = /^[\p{Emoji_Presentation}\p{Extended_Pictographic}]$/u
+
+export const AgentSchema = z
+  .object({
+    id: z.string().uuid(),
     name: z.string().min(1),
     role: AgentRoleSchema,
     description: z.string(),
-    emoji: z.string(),
-    color: z.string(),
+    emoji: z.string().refine((val) => emojiRegex.test(val), {
+      message: 'Must be a single emoji character',
+    }),
+    color: z.string().min(1),
     files: z.array(GeneratedFileSchema),
-    dependencies: z.array(z.string()).optional()
-});
+    dependencies: z.array(z.string().uuid()).optional(),
+    instructions: z.string().optional(),
+    model: z.string().optional(),
+  })
+  .strict()
 
-// Payload schemas for backwards compatibility
-export const SharePayloadV1Schema = z.object({
-    version: z.literal(1),
-    data: z.string()
-});
-
-export const SharePayloadV2Schema = z.object({
-    version: z.literal(2),
-    data: z.string(),
-    salt: z.string().optional()
-});
-
-export const SharePayloadV3Schema = z.object({
+export const SharePayloadV3Schema = z
+  .object({
     version: z.literal(3),
-    salt: z.string(),
-    iv: z.string(),
-    data: z.string(),
-    schemaHash: z.string().optional()
-});
+    salt: z.string().min(1),
+    iv: z.string().min(1),
+    data: z.string().min(1), // Base64 encrypted string
+    schemaHash: z.string().optional(),
+  })
+  .strict()
 
-export const ManifestSchema = z.object({
-    version: z.string(),
-    generatedAt: z.number(),
+export const ManifestSchema = z
+  .object({
+    version: z.string().min(1),
+    generatedAt: z.number().int().nonnegative(),
     agentsCount: z.number().int().min(0),
-    // Additional manifest fields can be added below
-});
+  })
+  .passthrough() // allows extra metadata if needed for future extensions
 
-export const InterviewChoiceSchema = z.object({
-    id: z.string(),
-    label: z.string(),
-    value: z.any()
-});
+export const InterviewChoiceSchema = z
+  .object({
+    id: z.string().min(1),
+    label: z.string().min(1),
+    value: z.any(),
+  })
+  .strict()
 
-export const InterviewQuestionSchema = z.object({
-    id: z.string(),
-    questionText: z.string(),
-    choices: z.array(InterviewChoiceSchema)
-});
+export const InterviewQuestionSchema = z
+  .object({
+    id: z.string().min(1),
+    questionText: z.string().min(1),
+    choices: z.array(InterviewChoiceSchema),
+  })
+  .strict()
